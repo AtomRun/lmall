@@ -1,0 +1,36 @@
+# 编译过的class文件不需要添加到git仓库上
+*.class
+
+# package file
+*.war
+*.ear
+
+# kdiff3 ignore
+*.orig
+
+# maven file
+target/
+
+# eclipse ignore
+.settings/
+.project
+.classpath
+
+# idea
+.idea/
+/idea/
+*.ipr
+*.iml
+*.iws
+
+# temp
+*.log
+*.catch
+*.diff
+*.patch
+*.tmp
+
+# system ignore
+.DS_Store
+Thumbs.db
+
