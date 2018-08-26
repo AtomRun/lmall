@@ -1,6 +1,6 @@
-package com.mmall.dao;
+package com.leeup.dao;
 
-import com.mmall.pojo.Category;
+import com.leeup.pojo.Category;
 
 public interface CategoryMapper {
     int deleteByPrimaryKey(Integer id);

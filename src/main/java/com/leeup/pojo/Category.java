@@ -1,4 +1,4 @@
-package com.mmall.pojo;
+package com.leeup.pojo;
 
 import java.util.Date;
 
