@@ -8,6 +8,7 @@ import com.leeup.pojo.User;
 import com.leeup.service.IUserService;
 import com.leeup.util.MD5Util;
 import com.sun.corba.se.impl.oa.toa.TOA;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -233,5 +234,13 @@ public class UserServiceImpl implements IUserService {
         //如果获取到信息了将密码置空，防止前端可以取到
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    //校验当前用户是不是管理员
+    public ServerResponse checkAdminRole(User user){
+        if (user!=null&&user.getRole().intValue()== Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 }

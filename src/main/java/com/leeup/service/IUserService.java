@@ -3,7 +3,6 @@ package com.leeup.service;
 
 import com.leeup.common.ServerResponse;
 import com.leeup.pojo.User;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,4 +41,7 @@ public interface IUserService {
 
     //获取个人信息
     ServerResponse<User> getInformation(Integer userId);
+
+    //检查当前用户是不是管理员
+    ServerResponse checkAdminRole(User user);
 }
