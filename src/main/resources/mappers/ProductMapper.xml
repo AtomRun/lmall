@@ -176,4 +176,58 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectList" resultMap="BaseResultMap">
+
+    <!-- 当我们在客户端链接mysql写代码的时候，写完sql回家上分号，但是我们这里使用pageHelper做的分页，当AOP进行分页的时候。pageHelper
+    会自动在后面加上limit，
+    -->
+    select 
+    <include refid="Base_Column_List"/>
+    from mmall_product
+    order by id asc
+
+  </select>
+
+  <select id="selectByNameAndProductId" resultMap="BaseResultMap" parameterType="map">
+    <!--对name进行空判断，因为 and name和id都传过来的情况才会成功查询出来值
+    where处理，如果这个productName不为空，这个and会自动处理掉，他会把第一个连接where条件判断的语句，
+    无用的and或者or全部替换成where，我们无需考虑where后的连接条件
+    -->
+    select 
+    <include refid="Base_Column_List"/>
+    FROM mmall_product
+    <where>
+      <if test="productName!=null">
+        AND name LIKE  #{productName}
+      </if>
+      <if test="productId!=null">
+        AND id = #{productId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
+    <!--要处理集合，因为我们传过来的是一个IDList集合-->
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_product
+    where status = 1
+    <if test="productName!= null">
+      AND name like #{productName}
+    </if>
+    <if test="categoryIdList!=null">
+      <!--遍历这个集合-->
+      AND category_id in
+      <foreach item="item" index="index" open="(" separator="," close=")" collection="categoryIdList">
+      <!--collection是我们声明的参数名，我们要遍历它
+        我们写in语句的时候，是每个元素和每个元素之间用逗号分隔，我们开始使用(开始分割使用,分割我们结束使用)结束
+        in的时候，他会拿item做 元素遍历这个集合，就像java中的foreach一样，碰到元素的时候以左括号开始，逗号分割，右括号结尾
+        不用考虑 括号后会不会添加括号，他会自动处理
+      -->
+        #{item}
+      <!--in item 是因为这个集合里面的泛型本身就是Id Integer的 我们直接in item 就可以了 因为item就是里面的元素-->
+      </foreach>
+    </if>
+  </select>
 </mapper>

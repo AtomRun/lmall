@@ -80,8 +80,8 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     //获取当前categoryId，并且递归查询他的字节点的categoryId
-    public ServerResponse selectCategoryAndChildrenById(Integer categoryId){
-        //拿到Id之后，要查找他的子节点然后判断子节点下是否还有字节点，然后把它们再放在一起，
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId){
+        //拿到Id之后，要查找他的子节点然后判断子节点下是否还有子节点，然后把它们再放在一起，
         Set<Category> categorySet = Sets.newHashSet();
         findChildrenCategory(categorySet,categoryId);
 

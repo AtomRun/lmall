@@ -24,5 +24,5 @@ public interface ICategoryService {
     ServerResponse<List<Category>> getChildrenParallelCategory(Integer parentId);
 
     //获取当前categoryId，并且递归查询他的字节点的categoryId
-    ServerResponse selectCategoryAndChildrenById(Integer categoryId);
+    ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId);
 }
