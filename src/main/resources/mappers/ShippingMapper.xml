@@ -31,7 +31,9 @@
     delete from mmall_shipping
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.leeup.pojo.Shipping" >
+  <insert id="insert" parameterType="com.leeup.pojo.Shipping" useGeneratedKeys="true" keyProperty="id">
+    <!--useGeneratedKeys="true" 表示使用useGeneratedKeys当设置为 true 时，表示如果插入的表以自增列为主键，则允许 JDBC 支持自动生成主键，并可将自动生成的主键返回
+    keyProperty="id" 生成的字段是哪个 这里是id-->
     insert into mmall_shipping (id, user_id, receiver_name, 
       receiver_phone, receiver_mobile, receiver_province, 
       receiver_city, receiver_district, receiver_address, 
@@ -176,4 +178,45 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <delete id="deleteByShippingIdUserId" parameterType="map">
+    DELETE FROM mmall_shipping
+    WHERE id = #{shippingId}
+    AND user_id = #{userId}
+  </delete>
+
+  <update id="updateByShipping" parameterType="com.leeup.pojo.Shipping">
+    <!--因为我们传过来的是一个参数，所以在获取的时候，拿的就是对象下面的一个属性和SpringMVC对象数据绑定是 相似的，
+      我们只使用userId进行判断
+    -->
+    update mmall_shipping
+    set
+      receiver_name = #{receiverName,jdbcType=VARCHAR},
+      receiver_phone = #{receiverPhone,jdbcType=VARCHAR},
+      receiver_mobile = #{receiverMobile,jdbcType=VARCHAR},
+      receiver_province = #{receiverProvince,jdbcType=VARCHAR},
+      receiver_city = #{receiverCity,jdbcType=VARCHAR},
+      receiver_district = #{receiverDistrict,jdbcType=VARCHAR},
+      receiver_address = #{receiverAddress,jdbcType=VARCHAR},
+      receiver_zip = #{receiverZip,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+    AND user_id = #{userId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByShippingIdUserId" resultMap="BaseResultMap" resultType="map">
+    SELECT 
+    <include refid="Base_Column_List"/>
+    FROM mmall_shipping
+    WHERE id = #{shippingId}
+    AND user_id = #{userId}
+  </select>
+
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_shipping
+    WHERE user_id = #{userId}
+  </select>
 </mapper>
