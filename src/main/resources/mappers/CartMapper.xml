@@ -116,4 +116,55 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCartByUserIdProductId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_cart
+    WHERE user_id = #{userId}
+    AND product_id = #{productId}
+  </select>
+
+  <select id="selectCartByUserId" resultMap="BaseResultMap" parameterType="int">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM  mmall_cart
+    WHERE user_id = #{userId}
+  </select>
+
+  <select id="selectCartProductCheckedStatusByUserId" resultType="int" parameterType="int">
+    <!--查这个表中有没有未勾选的并且userId是我们传过来的userId
+     查一下列表中有没有未勾选的，有的话就说明不是全选，如果未勾选为0，就代表全选-->
+    SELECT COUNT(1) FROM  mmall_cart WHERE checked = 0 and user_id = #{userId};
+  </select>
+
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    DELETE FROM mmall_cart WHERE user_id = #{userId}
+    <if test="productIdList!=null">
+      <!--id集合不为空，那么说明选中了商品并且要删除，我们要便利这个集合-->
+      <!--这里也要使用in语句-->
+      AND product_id IN
+      <foreach collection="productIdList" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </delete>
+
+  <update id="checkOrCheckedProduct" parameterType="map">
+    UPDATE mmall_cart
+    SET checked = #{checked},
+    <!--因为我们是新写的update,所以我们要把updatetime设置成now-->
+    update_time = now()
+    WHERE user_id = #{userId}
+    <if test="productId!=null">
+      AND product_id = #{productId}
+    </if>
+  </update>
+  
+  <select id="selectCartProductCount" parameterType="int" resultType="int">
+    <!-- SELECT sum(quantity) as COUNT FROM  mmall_cart WHERE user_id = #{userId} 这样写有一个隐患，我们mapper声明的时候是int,那么当我们select sum出来的值
+    是空的话，也就是说userId为空的时候就会出错，null无法赋予给基本类型-->
+    SELECT IFNULL(sum(quantity),0) as COUNT FROM  mmall_cart WHERE user_id = #{userId}
+    <!--IFNULL 逗号前面是判断条件，如果前面是null,那么后面设置默认为0-->
+  </select>
 </mapper>

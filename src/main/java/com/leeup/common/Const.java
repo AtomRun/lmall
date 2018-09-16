@@ -17,11 +17,19 @@ public class Const {
     public final static String CURRENT_USER = "currentUser";//User的常量
     public final static String EMAIL = "email";//Email的常量
     public final static String USERNAME = "username";//username的常量
+
+    public interface Cart{
+        int CHECKED = 1;//购物车选中状态
+        int UNCHECKED = 0;//购物车中未选中状态
+
+        String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";//限制失败
+        String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";//限制成功
+    }
     public interface ProductListOrderBy{
         //与前端约定的常量
         //约定使用下划线做一个分割，后面代表排序规则，前面orderby的字段
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
-        //使用Set的原因，Set的Contains事件复杂度是o 1，而List的是o n
+        //使用Set的原因，Set的Contains事件复杂度是o 1，而List的是o  n
     }
 
     public interface Role{
@@ -33,8 +41,8 @@ public class Const {
 
         ON_SALE(1,"在线");
 
-        private String value;
         private int code;
+        private String value;
 
         ProductStatusEnum(int code,String value){
             this.code = code;
