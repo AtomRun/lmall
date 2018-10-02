@@ -188,7 +188,7 @@
       shipping_id = #{shippingId,jdbcType=INTEGER},
       payment = #{payment,jdbcType=DECIMAL},
       payment_type = #{paymentType,jdbcType=INTEGER},
-      postage = #{postage,jdbcType=INTEGER},
+      postage = #{postage,jdbcType=INTEGER},n
       status = #{status,jdbcType=INTEGER},
       payment_time = #{paymentTime,jdbcType=TIMESTAMP},
       send_time = #{sendTime,jdbcType=TIMESTAMP},
@@ -198,4 +198,19 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByUserIdAndOrderNo" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_order
+    WHERE order_no = #{orderNo}
+    AND user_id = #{userId}
+  </select>
+
+  <select id="selectByOrderNo" resultMap="BaseResultMap" parameterType="long">
+      SELECT
+      <include refid="Base_Column_List"/>
+      from mmall_order
+      WHERE order_no = #{orderNo}
+  </select>
 </mapper>

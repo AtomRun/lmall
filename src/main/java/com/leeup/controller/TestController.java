@@ -1,4 +1,4 @@
-package com.leeup.test;
+package com.leeup.controller;
 
 import com.leeup.common.TokenCache;
 import com.leeup.dao.UserMapper;
