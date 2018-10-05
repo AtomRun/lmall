@@ -2,6 +2,9 @@ package com.leeup.dao;
 
 import com.leeup.pojo.Order;
 import org.apache.ibatis.annotations.Param;
+import org.aspectj.weaver.ast.Or;
+
+import java.util.List;
 
 public interface OrderMapper {
     int deleteByPrimaryKey(Integer id);
@@ -33,4 +36,22 @@ public interface OrderMapper {
      * @return com.leeup.pojo.Order
      **/
     Order selectByOrderNo(Long orderNo);
+
+    /**
+     * @Author 李闯
+     * @Description 通过userId获取订单
+     * @Date 17:08 2018/10/5
+     * @Param [Integer userId]
+     * @return java.util.List<com.leeup.pojo.Order>
+     **/
+    List<Order> selectByUserId(Integer userId);
+
+    /**
+     * @Author 李闯
+     * @Description 查询所有Order
+     * @Date 20:51 2018/10/5
+     * @Param []
+     * @return java.util.List<com.leeup.pojo.Order>
+     **/
+    List<Order> selectAllOrder();
 }

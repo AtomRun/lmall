@@ -72,4 +72,13 @@ public interface CartMapper {
      * @return int
      **/
     int selectCartProductCount(Integer userId);
+
+    /**
+     * @Author 李闯
+     * @Description 从购物车中获取已经勾选了的产品
+     * @Date 13:19 2018/10/4
+     * @Param
+     * @return
+     **/
+    List<Cart> selectCheckedCartByUserId(Integer userId);
 }

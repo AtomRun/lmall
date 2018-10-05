@@ -167,4 +167,12 @@
     SELECT IFNULL(sum(quantity),0) as COUNT FROM  mmall_cart WHERE user_id = #{userId}
     <!--IFNULL 逗号前面是判断条件，如果前面是null,那么后面设置默认为0-->
   </select>
+
+  <select id="selectCheckedCartByUserId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_cart
+    WHERE user_id = #{userId}
+    and checked = 1
+  </select>
 </mapper>

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,12 +40,100 @@ public class OrderController {
 
     /**
      * @Author 李闯
-     * @Description 支付的接口
+     * @Description 创建订单
      * @Date 22:18 2018/9/20
-     * @Param [session 判断用户是否登陆, orderNo 订单编号, request 获取servlet上下文，拿到upload文件夹，然后把自动生成的二维码传到ftp服务器上，然后我们会返回给前端，二维码的图片地址
-     * 前端把图片地址进行展示，进行扫码支付]
+     * @Param [session 判断用户是否登陆,shippingId创建订单时候的地址Id，
      * @return com.leeup.common.ServerResponse
      **/
+    @RequestMapping("create.do")
+    @ResponseBody
+    public ServerResponse create(HttpSession session, Integer shippingId){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.createOrder(user.getId(),shippingId);
+    }
+
+    /**
+     * @Author 李闯
+     * @Description 创建订单
+     * @Date 22:18 2018/9/20
+     * @Param [session 判断用户是否登陆,orderNo 订单Id，
+     * @return com.leeup.common.ServerResponse
+     **/
+    @RequestMapping("cancel.do")
+    @ResponseBody
+    public ServerResponse cancel(HttpSession session, Long orderNo){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.cancel(user.getId(),orderNo);
+    }
+
+    /**
+     * @Author 李闯
+     * @Description 获取购物车中的产品，也就是说客户在预览的时候，看到购物车中的一些明细，包括主图
+     * // 假设用户买了10种不同的商品，但是他勾选了5件，另外5件我们还要把他留在购物车里，我们找个接口就是获取购物车中选中的商品详情，
+     * @Date 22:18 2018/9/20
+     * @Param [session 判断用户是否登陆]
+     * @return com.leeup.common.ServerResponse
+     **/
+    @RequestMapping("getOrderCartProduct.do")
+    @ResponseBody
+    public ServerResponse getOrderCartProduct(HttpSession session){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderCartProduct(user.getId());
+    }
+
+    /**
+     * @Author 李闯
+     * @Description 获取订单详情
+     * @Date 22:18 2018/9/20
+     * @Param [session 判断用户是否登陆,orderNo 订单Id 判断是哪个订单的详情]
+     * @return com.leeup.common.ServerResponse
+     **/
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ServerResponse detail(HttpSession session,Long orderNo){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+
+        return iOrderService.getOrderDetail(user.getId(),orderNo);
+    }
+
+    /**
+     * @Author 李闯
+     * @Description 个人中心-查看我的订单list列表接口
+     * @Date 17:06 2018/10/5
+     * @Param [session, pageNum, pageSize]
+     * @return com.leeup.common.ServerResponse
+     **/
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse list(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
+    }
+
+
+        /**
+         * @Author 李闯
+         * @Description 支付的接口
+         * @Date 22:18 2018/9/20
+         * @Param [session 判断用户是否登陆, orderNo 订单编号, request 获取servlet上下文，拿到upload文件夹，然后把自动生成的二维码传到ftp服务器上，然后我们会返回给前端，二维码的图片地址
+         * 前端把图片地址进行展示，进行扫码支付]
+         * @return com.leeup.common.ServerResponse
+         **/
     @RequestMapping("pay.do")
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request){
@@ -52,6 +141,7 @@ public class OrderController {
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
+
         //拿到path
         String path = request.getSession().getServletContext().getRealPath("upload");
 
